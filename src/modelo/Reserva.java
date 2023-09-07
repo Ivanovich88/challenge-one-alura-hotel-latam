@@ -9,6 +9,8 @@ public class Reserva {
 	private LocalDate dataS;
 	private String valor;
 	private String formaPago;
+	
+	
 	public Reserva(LocalDate dataE, LocalDate dataS,String valor,String formaPago) {
 		super();
 		this.dataE = dataE;
@@ -18,6 +20,19 @@ public class Reserva {
 		
 	}
 	
+	
+	
+	public Reserva(Integer id, LocalDate dataE, LocalDate dataS, String valor, String formaPago) {
+		super();
+		this.id = id;
+		this.dataE = dataE;
+		this.dataS = dataS;
+		this.valor = valor;
+		this.formaPago = formaPago;
+	}
+
+
+
 	public Integer getId() {
 		return id;
 	}

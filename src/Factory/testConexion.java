@@ -13,7 +13,7 @@ public class testConexion {
 		
 		cone.close();
 		
-		System.out.println("Cerro bien");
+		System.out.println("Cerro la conexion");
 		
 	}
 	

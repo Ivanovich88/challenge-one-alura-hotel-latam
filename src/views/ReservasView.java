@@ -9,6 +9,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 import java.awt.Color;
+import java.awt.Cursor;
+
 import javax.swing.JTextField;
 import com.toedter.calendar.JDateChooser;
 
@@ -40,7 +42,7 @@ public class ReservasView extends JFrame {
 	public static JTextField txtValor;
 	public static JDateChooser txtFechaEntrada;
 	public static JDateChooser txtFechaSalida;
-	public static JComboBox<String> txtFormaPago;
+	public static JComboBox <Format> txtFormaPago;
 	int xMouse, yMouse;
 	private JLabel labelExit;
 	private JLabel labelAtras;
@@ -245,12 +247,26 @@ public class ReservasView extends JFrame {
 		btnAtras.add(labelAtras);
 		labelAtras.setHorizontalAlignment(SwingConstants.CENTER);
 		labelAtras.setFont(new Font("Roboto", Font.PLAIN, 23));
+	/*
+		JPanel btnsiguiente = new JPanel();
+		btnsiguiente.setLayout(null);
+		btnsiguiente.setBackground(SystemColor.textHighlight);
+		btnsiguiente.setBounds(238, 493, 122, 35);
+		btnsiguiente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 		
+	/*	
+		JLabel lblNewLabel = new JLabel("ENTRAR");
+		lblNewLabel.setBounds(0, 0, 122, 44);
+		btnLogin.add(lblNewLabel);
+		lblNewLabel.setForeground(SystemColor.controlLtHighlight);
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setFont(new Font("Roboto", Font.PLAIN, 18));
+	*/	
 		JLabel lblSiguiente = new JLabel("SIGUIENTE");
 		lblSiguiente.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSiguiente.setForeground(Color.WHITE);
 		lblSiguiente.setFont(new Font("Roboto", Font.PLAIN, 18));
-		lblSiguiente.setBounds(0, 0, 122, 35);
+		lblSiguiente.setBounds(0, 0, 122, 44);
 		
 		
 		//Campos que guardaremos en la base de datos
@@ -274,11 +290,11 @@ public class ReservasView extends JFrame {
 		txtFechaSalida.setBackground(Color.WHITE);
 		txtFechaSalida.setFont(new Font("Roboto", Font.PLAIN, 18));
 		txtFechaSalida.addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				//Activa el evento, después del usuario seleccionar las fechas se debe calcular el valor de la reserva
+		public void propertyChange(PropertyChangeEvent evt) {
+			//Activa el evento, después del usuario seleccionar las fechas se debe calcular el valor de la reserva
 				
 				
-			calcularValor(txtFechaSalida,txtFechaEntrada);
+		calcularValor(txtFechaEntrada,txtFechaSalida);
 			}
 		});
 		txtFechaSalida.setDateFormatString("yyyy-MM-dd");
@@ -298,7 +314,7 @@ public class ReservasView extends JFrame {
 		txtValor.setColumns(10);
 
 
-		txtFormaPago = new JComboBox();
+		txtFormaPago = new JComboBox<Format>();
 		txtFormaPago.setBounds(68, 417, 289, 38);
 		txtFormaPago.setBackground(SystemColor.text);
 		txtFormaPago.setBorder(new LineBorder(new Color(255, 255, 255), 1, true));
@@ -315,16 +331,31 @@ public class ReservasView extends JFrame {
 				} else {
 					JOptionPane.showMessageDialog(null, "Debes llenar todos los campos.");
 				}
-			}						
+			}	
+			
+			//Comienza extra
+			@Override
+		    public void mouseEntered(MouseEvent e) {
+		        btnsiguiente.setBackground(new Color(0, 102, 204));
+		    }
+
+		    @Override
+		    public void mouseExited(MouseEvent e) {
+		        btnsiguiente.setBackground(SystemColor.textHighlight);
+		    }
+			//Termina extra
 		});
 		btnsiguiente.setLayout(null);
 		btnsiguiente.setBackground(SystemColor.textHighlight);
 		btnsiguiente.setBounds(238, 493, 122, 35);
+		/*btnsiguiente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR)); */
+		btnsiguiente.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnsiguiente.add(lblSiguiente); // Agregamos el JLabel "SIGUIENTE" al panel del botón
 		panel.add(btnsiguiente);
-		btnsiguiente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 		
-
 	}
+	
+	
 		
 	private void guardarReserva() {
 		if (txtFechaEntrada.getDate() != null && txtFechaSalida.getDate() !=null && !txtValor.equals("")
@@ -334,7 +365,7 @@ public class ReservasView extends JFrame {
 			Reserva reserva = new Reserva (dataE, dataS, txtValor.getText(),txtFormaPago.getSelectedItem().toString());
 			reservaControl.guardar(reserva);	
 			
-			RegistroHuesped registro = new RegistroHuesped();
+			RegistroHuesped registro = new RegistroHuesped(reserva.getId());
 			registro.setVisible(true);
 			dispose();
 		}else {
@@ -360,7 +391,7 @@ public class ReservasView extends JFrame {
 	        Calendar calSalida = Calendar.getInstance();
 	        calSalida.setTime(fechaSalida);
 
-	        int dias = 0;
+	        int dias = -1;
 
 	        while (!calEntrada.after(calSalida)) {
 	            dias++;
@@ -373,6 +404,12 @@ public class ReservasView extends JFrame {
 	    }
 	}
 
+	//Limpieza del valor cuando se actualicen las fechas
+	
+	public void limpiarValor() {
+		txtValor.setText("");
+	}
+	
 	
 	//Código que permite mover la ventana por la pantalla según la posición de "x" y "y"	
 	 private void headerMousePressed(java.awt.event.MouseEvent evt) {
